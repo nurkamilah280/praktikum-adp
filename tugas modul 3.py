@@ -16,12 +16,6 @@ m = int(input('tebak angka positif : '))
 while m > n :
     print('angka yang anda masukkan melebihi batas rentang angka')
     m = int(input('tebak ulang : '))
-faktor = 2 
-while faktor < k :
-    if k % faktor == 0 and m % faktor == 0 :
-        print( 'angka', m, 'adalah angka BOM', pemain_2,' anda kalah !')
-        break 
-    faktor += 1
 if m % k == 0 :
     print( 'angka', m, 'adalah angka BOM', pemain_2,'anda kalah !')
 else : 
