@@ -17,8 +17,8 @@ while m > n :
     print('angka yang anda masukkan melebihi batas rentang angka')
     m = int(input('tebak ulang : '))
 if m % k == 0 :
-    print( 'angka', m, 'adalah angka BOM', pemain_2,'anda kalah !')
+    print( 'angka', m, 'merupakan angka BOM, selamat', pemain_1,'anda menang!')
 else : 
-    print('angka', m, 'bukan angka BOM, selamat', pemain_1,'anda menang!')
+    print('angka', m, 'bukan angka BOM, selamat', pemain_2,'anda menang!')
 
             
