@@ -1,0 +1,60 @@
+def input_data():
+    data = []
+    jumlah = int(input("Masukkan jumlah mahasiswa: "))
+    for i in range(jumlah):
+        print("\nMahasiswa ke-", i + 1)
+        nama = input("Nama: ")
+        nim = input("NIM: ")
+        uts = float(input("Nilai UTS: "))
+        uas = float(input("Nilai UAS: "))
+        tugas = float(input("Nilai Tugas: "))
+        nilai_akhir = int((0.35 * uts + 0.35 * uas + 0.30 * tugas) * 100) / 100
+        data.append([nama, nim, uts, uas, tugas, nilai_akhir])
+    return data
+
+def hitung_rata(data, kolom):
+    total = 0
+    for mhs in data:
+        total += mhs[kolom]
+    rata = total / len(data)
+    return int(rata * 100) / 100
+
+def urutkan_dan_peringkat(data):
+    n = len(data)
+    for i in range(n):
+        for j in range(n - 1):
+            if data[j][5] < data[j + 1][5]:
+                data[j], data[j + 1] = data[j + 1], data[j]
+    for i in range(n):
+        data[i].append(i + 1)
+    return data
+
+def print_garis():
+    print("+------------+--------------+-------+-------+--------+--------------+-----------+")
+
+def print_tabel(data):
+    print_garis()
+    print("|{:^12}|{:^14}|{:^7}|{:^7}|{:^8}|{:^14}|{:^11}|".format(
+        "Nama", "NIM", "UTS", "UAS", "Tugas", "Nilai Akhir", "Peringkat"
+    ))
+    print_garis()
+    for m in data:
+        print("|{:^12}|{:^14}|{:^7}|{:^7}|{:^8}|{:^14}|{:^11}|".format(
+            m[0], m[1], m[2], m[3], m[4], m[5], m[6]
+        ))
+    print_garis()
+    print("|{:^12}|{:^14}|{:^7}|{:^7}|{:^8}|{:^14}|{:^11}|".format(
+        "Rata-rata", "",
+        hitung_rata(data, 2),
+        hitung_rata(data, 3),
+        hitung_rata(data, 4),
+        hitung_rata(data, 5),
+        ""
+     ))
+    print_garis()
+
+def m():
+    data = input_data()
+    data = urutkan_dan_peringkat(data)
+    print_tabel(data)
+m()
