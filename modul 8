@@ -1,0 +1,102 @@
+# Fungsi 1: Input data buku dari pengguna dan simpan ke file dalam bentuk tabel
+def input_data_buku():
+    jumlah_buku = int(input("Berapa jumlah buku yang ingin dimasukkan? "))
+    with open("inventaris_buku.txt", "w") as file:
+        # Header tabel
+        header_tabel = "| {:<13} | {:<20} | {:<15} | {:>4} | {:>11} | {:>10} |\n".format(
+            "ISBN", "Judul", "Penulis", "Stok", "Harga Beli", "Harga Jual"
+        )
+        garis = "-" * len(header_tabel.strip()) + "\n"
+        file.write(header_tabel)
+        file.write(garis)
+
+        # Input data dari pengguna
+        for i in range(jumlah_buku):
+            print(f"\nMasukkan data buku ke-{i+1}")
+            isbn = input("ISBN: ")
+            judul = input("Judul Buku: ")
+            penulis = input("Penulis: ")
+            stok = int(input("Jumlah Stok: "))
+            harga_beli = int(input("Harga Beli: "))
+            harga_jual = int(input("Harga Jual: "))
+
+            file.write("| {:<13} | {:<20} | {:<15} | {:>4} | {:>11} | {:>10} |\n".format(
+                isbn, judul, penulis, stok, harga_beli, harga_jual
+            ))
+
+# Fungsi 2: Membaca data dari file dan simpan dalam list of dictionary
+def baca_data_buku():
+    daftar_buku = []
+    with open("inventaris_buku.txt", "r") as file:
+        baris_data = file.readlines()[2:]  # Lewati header dan garis
+        for baris in baris_data:
+            potongan = baris.strip().split("|")[1:-1]
+            potongan = [p.strip() for p in potongan]
+            buku = {
+                "ISBN": potongan[0],
+                "Judul": potongan[1],
+                "Penulis": potongan[2],
+                "Stok": int(potongan[3]),
+                "Harga Beli": int(potongan[4]),
+                "Harga Jual": int(potongan[5])
+            }
+            daftar_buku.append(buku)
+    return daftar_buku
+
+# Fungsi 3: Menghitung keuntungan dan menulis file laporan tabel
+def buat_laporan_tabel(daftar_buku):
+    with open("laporan_inventaris.txt", "w") as file:
+        kepala = "| {:<13} | {:<20} | {:<15} | {:>4} | {:>11} | {:>10} | {:>21} |\n".format(
+            "ISBN", "Judul", "Penulis", "Stok", "Harga Beli", "Harga Jual", "Potensi Keuntungan"
+        )
+        garis = "-" * len(kepala.strip()) + "\n"
+        file.write(kepala)
+        file.write(garis)
+
+        for buku in daftar_buku:
+            keuntungan = (buku["Harga Jual"] - buku["Harga Beli"]) * buku["Stok"]
+            buku["Potensi Keuntungan"] = keuntungan
+            file.write("| {:<13} | {:<20} | {:<15} | {:>4} | {:>11} | {:>10} | {:>21} |\n".format(
+                buku["ISBN"], buku["Judul"], buku["Penulis"],
+                buku["Stok"], buku["Harga Beli"], buku["Harga Jual"], keuntungan
+            ))
+
+# Fungsi 4: Analisis inventaris
+def analisis_inventaris(daftar_buku):
+    buku_untung_maksimum = daftar_buku[0]
+    buku_untung_minimum = daftar_buku[0]
+    total_nilai = 0
+    daftar_restock = []
+
+    for buku in daftar_buku:
+        keuntungan = buku["Potensi Keuntungan"]
+        nilai = buku["Stok"] * buku["Harga Beli"]
+        total_nilai += nilai
+
+        if keuntungan > buku_untung_maksimum["Potensi Keuntungan"]:
+            buku_untung_maksimum = buku
+        if keuntungan < buku_untung_minimum["Potensi Keuntungan"]:
+            buku_untung_minimum = buku
+        if buku["Stok"] < 5:
+            daftar_restock.append(buku)
+
+    print("\n=== Analisis Inventaris ===")
+    print(f"Buku dengan keuntungan TERTINGGI : {buku_untung_maksimum['Judul']} (Rp{buku_untung_maksimum['Potensi Keuntungan']})")
+    print(f"Buku dengan keuntungan TERENDAH : {buku_untung_minimum['Judul']} (Rp{buku_untung_minimum['Potensi Keuntungan']})")
+    print(f"Total nilai inventaris (berdasarkan harga beli): Rp{total_nilai}")
+    print("Buku yang perlu di-restock (stok < 5):")
+    if daftar_restock:
+        for buku in daftar_restock:
+            print(f"  - {buku['Judul']} (Stok: {buku['Stok']})")
+    else:
+        print("  Semua stok aman.")
+
+# Fungsi utama
+def utama():
+    input_data_buku()
+    daftar_buku = baca_data_buku()
+    buat_laporan_tabel(daftar_buku)
+    analisis_inventaris(daftar_buku)
+
+# Jalankan program
+utama()
